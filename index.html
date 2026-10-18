@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CCE RA 9048 / RA 10172 Online Generator</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script defer src="app.js"></script>
+<script defer src="template-export.js"></script>
+</head>
+<body>
+<header class="topbar"><div class="brandmark">CCE</div><div><p class="eyebrow">LOCAL CIVIL REGISTRY OFFICE</p><h1>CCE Document Generator</h1><p class="subtitle">RA 9048 / RA 10172 · Browser-based form and Word export</p></div><span class="law-chip" id="lawChip">RA 9048</span></header>
+<main class="shell">
+<section class="notice"><strong>Privacy note</strong><span>Entries stay in this browser tab. This app does not save case data to a server. Use a trusted device and verify every detail before printing or filing.</span></section>
+<div class="workspace">
+<section class="editor panel">
+<div class="section-head"><div><p class="eyebrow">CASE WORKSPACE</p><h2>Enter case details</h2></div><button type="button" class="btn secondary" id="clearBtn">Clear form</button></div>
+<div class="progress-line"><div id="progressFill"></div></div><p id="requiredSummary" class="small muted">Required fields are checked as you type.</p>
+<div class="template-upload"><label for="templateFile">Original Word template (.docx) *<input id="templateFile" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></label><p class="small muted">Select your original CCE-0060-2026 Word file. The generator edits a copy of that file so the letterhead, footer, page layout, and positioning are retained.</p><p id="templateStatus" class="small muted" role="status">No Word template selected yet.</p></div>
+<form id="cceForm" autocomplete="off">
+<details open><summary>1. Case information</summary><div class="fields">
+<label>Petition case number *<input name="caseNo" value="CCE-0060-2026" required></label>
+<label>Applicable law *<select name="law" id="lawSelect" required><option value="9048" selected>RA 9048 — Clerical errors / first name or nickname</option><option value="10172">RA 10172 — Sex, date of birth, or day/month of birth</option></select></label>
+<label>Document type<input name="documentType" value="Certificate of Live Birth" required></label>
+<label>Civil registry number<input name="registryNo" value="124" required></label>
+<label>Municipality<input name="municipality" value="Santa Cruz" required></label>
+<label>Province<input name="province" value="Ilocos Sur" required></label>
+<label>Cover letter date<input name="coverDate" value="June 2, 2026" required></label>
+<label>Petition date<input name="petitionDate" value="May 18, 2026" required></label>
+</div></details>
+<details open><summary>2. Petitioner</summary><div class="fields">
+<label>Complete name *<input name="petitioner" value="RONALD GUIEB CASILANG" required></label>
+<label>Nationality / citizenship<input name="nationality" value="Filipino" required></label>
+<label>Age statement<input name="ageStatement" value="of legal age" required></label>
+<label>Address *<input name="petitionerAddress" value="Mambog, Sta. Cruz, Ilocos Sur" required></label>
+<label>Petitioner relationship to document owner<select name="relationship" required><option value="sister" selected>sister</option><option value="brother">brother</option><option value="mother">mother</option><option value="father">father</option><option value="daughter">daughter</option><option value="son">son</option><option value="spouse">spouse</option><option value="child">child</option><option value="parent">parent</option><option value="relative">relative</option><option value="guardian">guardian</option><option value="self">self (same person)</option><option value="other">other</option></select></label>
+<label>Petitioner pronouns<select name="petitionerPronouns"><option value="I" selected>I / me / my</option><option value="he">he / him / his</option><option value="she">she / her / her</option><option value="they">they / them / their</option></select></label>
+<label>Petitioner's email / contact (optional)<input name="petitionerContact"></label>
+</div></details>
+<details open><summary>3. Document owner and birth record</summary><div class="fields">
+<label>Document owner's full name *<input name="owner" value="HELEN GUIEB CASILANG" required></label>
+<label>Date of birth *<input name="dob" value="March 6, 1968" required></label>
+<label>Place of birth *<input name="birthplace" value="Sta. Cruz, Ilocos Sur, Philippines" required></label>
+<label>Mother's name (as currently recorded)<input name="motherName"></label>
+<label>Father's name (if applicable)<input name="fatherName"></label>
+<label>Document owner pronouns<select name="ownerPronouns"><option value="I">I / me / my (first person)</option><option value="he">he / him / his</option><option value="she" selected>she / her / her</option><option value="they">they / them / their</option></select></label>
+<label>Whose record is being corrected? *<select name="recordOwnerType" required><option value="owner" selected>Document owner's record</option><option value="petitioner">Petitioner's own record</option></select></label>
+</div></details>
+<details open><summary>4. Corrections requested</summary><p class="help">Enter each incorrect entry and its requested correction. Add or remove rows as needed.</p>
+<div class="correction-head"><span>Description</span><span>From (current entry)</span><span>To (correct entry)</span><span></span></div><div id="correctionRows"></div><button type="button" class="btn secondary" id="addCorrection">+ Add correction</button>
+<label class="full">Facts / reasons for filing *<textarea name="reasons" rows="3" required>To correct the erroneous entries in my sister’s Certificate of Live Birth, in order to be consistent with all other supporting documents.</textarea></label>\n<div class="full"><label>Supporting documents (add or remove rows)</label><div id="supportRows"></div><button type="button" class="btn secondary" id="addSupport">+ Add supporting document</button></div>
+<label>Use “entry” or “entries” *<select name="entryCount"><option value="entries" selected>entries</option><option value="entry">entry</option></select></label>
+<label>Reason wording / owner reference *<select name="ownerReference"><option value="my">my (my own record)</option><option value="my sister's">my sister's</option><option value="my brother's">my brother's</option><option value="my mother's">my mother's</option><option value="my father's">my father's</option><option value="my daughter's">my daughter's</option><option value="my son's">my son's</option><option value="the document owner's">the document owner's</option><option value="custom" selected>Use relationship automatically</option></select></label>
+</details>
+<details open><summary>5. Posting and action dates</summary><div class="fields">
+<label>Notice for Posting date<input name="noticeDate" value="19 May 2026" required></label>
+<label>Posting start date<input name="postingStart" value="May 20, 2026" required></label>
+<label>Posting end date<input name="postingEnd" value="May 29, 2026" required></label>
+<label>Certificate issue date<input name="certificateDate" value="June 1, 2026" required></label>
+<label>MCR action date<input name="actionDate" value="June 2, 2026" required></label>
+<fieldset class="full decision-field"><legend>For C/MCR use only — ACTION TAKEN BY THE MCR *</legend><p class="help">Select one decision; the generated form marks the selected box with X.</p><div class="decision-options"><label><input type="radio" name="actionTaken" value="GRANTED" checked> ☐ Granted</label><label><input type="radio" name="actionTaken" value="DENIED"> ☐ Denied</label></div><label>Basis for MCR action<textarea name="actionBasis" rows="2" placeholder="Provide the basis for the action taken"></textarea></label><label>Date of MCR action<input name="actionDate" value="June 2, 2026" required></label></fieldset>
+<!-- CRG-only action section removed as requested. -->
+</div></details>
+<details><summary>6. Office and recipient details</summary><div class="fields">
+<label>Municipal Civil Registrar<input name="registrar" value="ZENAIDA F. JAVINES" required></label>
+<label>PSA recipient<input name="recipient" value="ATTY. ELIEZER P. AMBATALI"></label>
+<label>Recipient title<input name="recipientTitle" value="ATTORNEY III"></label>\n<label class="full">PSA recipient office address<textarea name="recipientAddress" rows="2">Philippine Statistics Authority Complex&#10;4th Floor TAM Building&#10;East Avenue, Quezon City</textarea></label>
+<label>Office phone<input name="officePhone" value="0915-698-3570"></label>
+<label>Office email<input name="officeEmail" value="javineszenaida@yahoo.com"></label>
+<!-- Office address field removed -->
+<label>Petitioner's valid ID type *<input name="idType" value="Driver's License" required></label>
+<label>Petitioner's ID number *<input name="idNumber" value="A04-08-005650" required></label>
+<label>Sworn date *<input name="swornDate" value="18th day of May, 2026" required></label>
+</div></details>
+<div class="form-actions"><button class="btn primary" type="button" id="downloadBtn">Generate Word document (.docx)</button><p id="downloadStatus" class="small muted" role="status"></p></div>
+</form>
+</section>
+<aside class="preview-column">
+<div class="panel preview-panel"><div class="section-head"><div><p class="eyebrow">LIVE PREVIEW</p><h2>Document preview</h2></div></div>
+<div class="tabs" role="tablist"><button class="tab active" data-preview="cover">Cover letter</button><button class="tab" data-preview="notice">Notice</button><button class="tab" data-preview="certificate">Certificate</button><button class="tab" data-preview="petition">Petition</button></div>
+<div id="preview" class="paper" aria-live="polite"></div>
+</div>
+<div class="panel checklist"><h3>Completeness check</h3><div id="missingList"></div><p class="small muted">This checks the app's required fields only; it does not confirm legal sufficiency.</p></div>
+</aside>
+</div>
+<!-- Footer removed as requested -->
+</main>
+</body></html>
